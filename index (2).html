@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Маркетинговый отчёт Varseas — Январь–Май 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --aks:#3b82f6; --aks-d:#1d4ed8; --aks-bg:rgba(59,130,246,.12);
+  --its:#ec4899; --its-d:#be185d; --its-bg:rgba(236,72,153,.12);
+  --binn:#10b981; --binn-d:#047857; --binn-bg:rgba(16,185,129,.12);
+  --ctx:#f59e0b; --ctx-d:#b45309; --ctx-bg:rgba(245,158,11,.12);
+  --may:#8b5cf6; --may-d:#6d28d9; --may-bg:rgba(139,92,246,.12);
+  --up:#10b981; --dn:#ef4444; --warn:#f59e0b;
+  --bg:#f0f2f7; --card:#fff; --border:#e8eaf0;
+  --text:#1a1a2e; --muted:#6b7280;
+  --navy:#0f172a; --navy2:#1e3a5f; --navy3:#0f3460;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 50%,#0f3460 100%);padding:32px 48px 26px;color:#fff;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;}
+.header h1{font-size:24px;font-weight:800;letter-spacing:-.5px;}
+.header .hsub{font-size:12px;opacity:.55;margin-top:5px;}
+.header .htitle-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.header .hperiod{background:rgba(139,92,246,.25);border:1px solid rgba(139,92,246,.5);color:#ddd6fe;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;}
+.badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);}
+.badge.aks{background:rgba(59,130,246,.2);border-color:rgba(59,130,246,.4);}
+.badge.its{background:rgba(236,72,153,.2);border-color:rgba(236,72,153,.4);}
+.badge.binn{background:rgba(16,185,129,.2);border-color:rgba(16,185,129,.4);}
+
+/* NAV */
+.nav{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100;display:flex;overflow-x:auto;}
+.nbt{padding:14px 20px;font-size:13px;font-weight:600;color:var(--muted);border:none;background:none;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:.2s;}
+.nbt:hover{color:var(--text);}
+.nbt.active{color:var(--navy2);border-bottom-color:var(--navy2);}
+.nbt.may.active{color:var(--may-d);border-bottom-color:var(--may);}
+
+.tab{display:none;}.tab.active{display:block;}
+.container{max-width:1200px;margin:0 auto;padding:28px 20px 56px;}
+
+/* SECTION LABEL */
+.slabel{display:flex;align-items:center;gap:10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin:32px 0 14px;}
+.slabel:first-child{margin-top:0;}
+.slabel .snum{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:#fff;flex-shrink:0;}
+.slabel.global .snum{background:var(--navy2);}
+.slabel.aks .snum{background:var(--aks);}
+.slabel.its .snum{background:var(--its);}
+.slabel.binn .snum{background:var(--binn);}
+.slabel.ctx .snum{background:var(--ctx);}
+.slabel.may .snum{background:var(--may);}
+
+/* CARDS */
+.card{background:var(--card);border-radius:14px;padding:22px 24px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.card-t{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);margin-bottom:14px;}
+.mb{margin-bottom:18px;}.mb2{margin-bottom:24px;}.mb3{margin-bottom:32px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+.ch-sm{position:relative;height:200px;}
+.ch-md{position:relative;height:260px;}
+.ch-lg{position:relative;height:310px;}
+
+/* KPI STRIP */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.kpi{background:var(--card);border-radius:12px;padding:16px 18px;box-shadow:0 2px 10px rgba(0,0,0,.05);border-top:3px solid var(--border);}
+.kpi.aks{border-top-color:var(--aks);}.kpi.its{border-top-color:var(--its);}.kpi.binn{border-top-color:var(--binn);}.kpi.may{border-top-color:var(--may);}.kpi.all{border-top-color:var(--navy3);}
+.kpi .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+.kpi .val{font-size:21px;font-weight:800;color:var(--text);line-height:1.1;}
+.kpi .sub{font-size:11px;margin-top:4px;color:var(--muted);}
+.kpi.may .val{color:var(--may-d);}
+
+/* HL ROW */
+.hl-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.hl{border-radius:12px;padding:16px 18px;display:flex;flex-direction:column;gap:5px;}
+.hl.g{background:#ecfdf5;border:1px solid #6ee7b7;}
+.hl.b{background:#eff6ff;border:1px solid #93c5fd;}
+.hl.o{background:#fffbeb;border:1px solid #fcd34d;}
+.hl.p{background:#fdf2f8;border:1px solid #f9a8d4;}
+.hl.v{background:#f5f3ff;border:1px solid #c4b5fd;}
+.hl.t{background:#f0fdfa;border:1px solid #5eead4;}
+.hl .lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;opacity:.7;}
+.hl .val{font-size:20px;font-weight:800;}
+.hl.g .val{color:#065f46;}.hl.b .val{color:#1d4ed8;}.hl.o .val{color:#92400e;}.hl.p .val{color:#9d174d;}.hl.v .val{color:#5b21b6;}.hl.t .val{color:#0f766e;}
+.hl .sub{font-size:12px;opacity:.75;}
+
+/* ALERTS */
+.alert{border-radius:12px;padding:14px 20px;margin-bottom:18px;font-size:13px;display:flex;gap:12px;align-items:flex-start;}
+.alert-g{background:#ecfdf5;border:1px solid #6ee7b7;color:#065f46;}
+.alert-y{background:#fffbeb;border:1px solid #fcd34d;color:#78350f;}
+.alert-r{background:#fef2f2;border:1px solid #fca5a5;color:#7f1d1d;}
+.alert-b{background:#eff6ff;border:1px solid #93c5fd;color:#1e3a5f;}
+.alert-t{background:#f0fdfa;border:1px solid #5eead4;color:#134e4a;}
+.alert-v{background:#f5f3ff;border:1px solid #c4b5fd;color:#4c1d95;}
+.alert i{font-size:18px;flex-shrink:0;}
+.alert strong{display:block;font-size:14px;margin-bottom:3px;}
+
+/* TABLES */
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{background:#f8f9fc;color:var(--muted);font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:10px 13px;text-align:right;border-bottom:2px solid var(--border);}
+thead th:first-child{text-align:left;}
+tbody td{padding:10px 13px;text-align:right;border-bottom:1px solid #f4f5f8;}
+tbody td:first-child{text-align:left;font-weight:600;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover td{background:#fafbff;}
+.tr-aks td:first-child{color:var(--aks);}
+.tr-its td:first-child{color:var(--its);}
+.tr-binn td:first-child{color:var(--binn-d);}
+.tr-tot{background:#f0f6ff;}
+.tr-tot td{font-weight:700;color:var(--navy3);}
+.tr-may{background:#f5f3ff;}
+.tr-may td{font-weight:700;color:var(--may-d);}
+.sep td{background:#f8f9fc;}
+
+.tot-table th{background:var(--navy3);color:#fff;padding:11px 13px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;text-align:right;}
+.tot-table th:first-child{text-align:left;}
+.tot-table th.may-hdr{background:var(--may-d);}
+.tot-table td{padding:11px 13px;text-align:right;border-bottom:1px solid var(--border);}
+.tot-table td:first-child{text-align:left;font-weight:700;}
+.tot-table .sep2{background:#f0f6ff;font-weight:800;color:var(--navy3);}
+.tot-table .sep2-may{background:#f5f3ff;font-weight:800;color:var(--may-d);}
+
+.up{color:var(--up);font-weight:700;}
+.up::before{content:'▲ ';font-size:10px;}
+.dn{color:var(--dn);font-weight:700;}
+.dn::before{content:'▼ ';font-size:10px;}
+.em{color:var(--muted);}
+
+.tag{display:inline-block;border-radius:5px;padding:2px 7px;font-size:11px;font-weight:700;}
+.tag-aks{background:#eff6ff;color:var(--aks);}
+.tag-its{background:#fdf2f8;color:var(--its);}
+.tag-binn{background:#f0fdf4;color:var(--binn-d);}
+.tag-may{background:#f5f3ff;color:var(--may-d);}
+
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px;}
+.insight{border-radius:12px;padding:18px 20px;}
+.insight.pos{background:#ecfdf5;border-left:4px solid var(--up);}
+.insight.neg{background:#fef2f2;border-left:4px solid var(--dn);}
+.insight.warn{background:#fffbeb;border-left:4px solid var(--warn);}
+.insight.info{background:#eff6ff;border-left:4px solid var(--aks);}
+.insight.may{background:#f5f3ff;border-left:4px solid var(--may);}
+.insight .i-t{font-size:13px;font-weight:700;margin-bottom:6px;}
+.insight.pos .i-t{color:#065f46;}.insight.neg .i-t{color:#7f1d1d;}.insight.warn .i-t{color:#78350f;}.insight.info .i-t{color:#1e3a5f;}.insight.may .i-t{color:#4c1d95;}
+.insight p{font-size:13px;line-height:1.55;}
+
+.avg-wrap{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.footer{text-align:center;font-size:12px;color:#9ca3af;padding:28px 0 8px;}
+
+/* MAY HIGHLIGHT BACKGROUND */
+.may-section{background:linear-gradient(180deg,rgba(139,92,246,.06) 0%,transparent 100%);border-radius:14px;padding:24px 26px;border:1px solid rgba(139,92,246,.15);}
+
+@media(max-width:720px){.grid2,.grid3,.grid4,.kpis,.hl-row,.insight-grid,.avg-wrap{grid-template-columns:1fr;}.header{padding:24px 20px 20px;}.nbt{padding:12px 14px;font-size:12px;}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="hsub">VARSEAS · ПОЛНЫЙ МАРКЕТИНГОВЫЙ ОТЧЁТ</div>
+    <div class="htitle-row">
+      <h1>Динамика Январь — Май 2026</h1>
+      <span class="hperiod">⚡ Май добавлен</span>
+    </div>
+    <div class="hsub" style="margin-top:8px">3 бренда · Блогеры · Яндекс Директ · ВК Таргет · WB + Ozon</div>
+    <div class="badges">
+      <div class="badge aks">Aksolagen</div>
+      <div class="badge its">It's Collagen</div>
+      <div class="badge binn">Binn Pets</div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nbt active" onclick="showT('sec-may',this)">⚡ Май + Прогноз Q2</button>
+  <button class="nbt" onclick="showT('sec-all',this)">🌐 Сводный обзор</button>
+  <button class="nbt" onclick="showT('sec-aks',this)">🔵 Aksolagen</button>
+  <button class="nbt" onclick="showT('sec-its',this)">🩷 It's Collagen</button>
+  <button class="nbt" onclick="showT('sec-binn',this)">🟢 Binn Pets</button>
+  <button class="nbt" onclick="showT('sec-ctx',this)">📈 Контекст & Таргет</button>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--                       МАЙ + ПРОГНОЗ Q2                       -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div id="sec-may" class="tab active">
+<div class="container">
+
+<!-- CONTEXT BANNER -->
+<div class="alert alert-v">
+  <i>📅</i>
+  <div>
+    <strong>Контекст мая 2026 — почему этот результат особенный</strong>
+    Май для нутрицевтиков и зоотоваров традиционно проседает на 15–25% относительно апреля: длинные праздники, сезонная пауза в принятии решений о ЗОЖ-покупках, отток внимания на дачи/отпуска. <strong>Дополнительно: 1–9 мая</strong> в РФ наблюдались массовые сбои мобильной связи и временные блокировки интернета, особенно в первые два-три дня каждых праздников. Это «съело» эффективную часть рекламного канала почти на треть месяца. <strong>Несмотря на это, выручка по 3 брендам выросла, а ROAS блогерского канала превысил показатели апреля.</strong>
+  </div>
+</div>
+
+<!-- HEADLINE KPIs -->
+<div class="slabel may"><span class="snum">★</span>Май 2026 — итог по всем брендам и каналам</div>
+<div class="kpis mb2">
+  <div class="kpi may"><div class="lbl">💰 Общая выручка</div><div class="val">3 132 407 ₽</div><div class="sub">Блогеры + Яндекс Директ</div></div>
+  <div class="kpi may"><div class="lbl">📊 Общий бюджет</div><div class="val">1 005 698 ₽</div><div class="sub">+13% к апрелю</div></div>
+  <div class="kpi may"><div class="lbl">🎯 ROAS общий</div><div class="val">3,11x</div><div class="sub">Апр: 3,52x · Q1 ср.: 3,13x</div></div>
+  <div class="kpi may"><div class="lbl">🛒 Корзины (блогеры)</div><div class="val">15 317 шт.</div><div class="sub">Апр: 15 291 · ≈ на уровне</div></div>
+</div>
+
+<!-- BLOG MAY SUMMARY -->
+<div class="slabel may"><span class="snum">1</span>Блогеры — итог мая по 3 брендам</div>
+<div class="card mb2" style="overflow-x:auto">
+  <table class="tot-table">
+    <thead>
+      <tr>
+        <th>Бренд</th><th>Интеграций</th><th>Переходы</th><th>Корзины</th><th>Заказы</th>
+        <th class="may-hdr">Выручка, ₽</th><th class="may-hdr">Бюджет, ₽</th><th class="may-hdr">ROAS</th>
+        <th>Δ выручка к апр</th><th>Δ ROAS к апр</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="tr-aks">
+        <td><span class="tag tag-aks">AKS</span></td>
+        <td>14 + ассоц.</td><td>26 956</td><td>6 590</td><td>729</td>
+        <td><strong>1 650 702</strong></td><td>378 907</td><td><strong>4,36x</strong></td>
+        <td class="dn">−21,4%</td><td class="dn">−1,6%</td>
+      </tr>
+      <tr class="tr-its">
+        <td><span class="tag tag-its">ITS</span></td>
+        <td>16</td><td>26 817</td><td>8 109</td><td>629</td>
+        <td><strong>1 159 898</strong></td><td>299 141</td><td><strong>3,88x</strong></td>
+        <td class="up">+26,0%</td><td class="up">+17,9%</td>
+      </tr>
+      <tr class="tr-binn">
+        <td><span class="tag tag-binn">BINN</span></td>
+        <td>8 + ассоц.</td><td>5 385</td><td>618</td><td>187</td>
+        <td><strong>321 807</strong></td><td>113 947</td><td><strong>2,82x</strong></td>
+        <td class="dn">−0,7%</td><td class="dn">−18,7%</td>
+      </tr>
+      <tr class="tr-may">
+        <td>🟣 ИТОГО МАЙ</td>
+        <td>38 + ассоц.</td><td>59 158</td><td>15 317</td><td>1 545</td>
+        <td><strong>3 132 407</strong></td><td>791 995</td><td><strong>3,95x</strong></td>
+        <td><span class="em">—</span></td><td><span class="em">—</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- CHART REVENUE -->
+<div class="slabel may"><span class="snum">2</span>Выручка по брендам — динамика Январь → Май</div>
+<div class="card mb2"><div class="ch-lg"><canvas id="mayRevTrend"></canvas></div></div>
+
+<!-- CHART ROAS -->
+<div class="slabel may"><span class="snum">3</span>ROAS блогерского канала — Январь → Май</div>
+<div class="card mb2"><div class="ch-md"><canvas id="mayRoasTrend"></canvas></div></div>
+
+<!-- CHART KORZIN -->
+<div class="slabel may"><span class="snum">4</span>Корзины — рост вовлечённости в мае несмотря на категорийную просадку</div>
+<div class="card mb2"><div class="ch-md"><canvas id="mayKorzin"></canvas></div></div>
+
+<!-- ЯНДЕКС МАЙ -->
+<div class="slabel may"><span class="snum">5</span>Яндекс Директ — май (5 недель, включая первую частично-апрельскую)</div>
+
+<div class="alert alert-b">
+  <i>📌</i>
+  <div><strong>Аномалия первой недели 27.04–03.05</strong> Эта неделя относится к месячной отчётности как майская, но по факту 4 из 7 дней — конец апреля, когда отложенный спрос еще не упал. Поэтому она показала ROAS 9,9x (ITS) и 3,1x (AKS) — выше, чем «чистый» май. Чтобы корректно оценить именно майскую перформанс-картину, ниже даю две версии: полная и «чистый май» (с 04.05).</div>
+</div>
+
+<div class="grid2 mb2">
+  <div class="card">
+    <div class="card-t">It's Collagen · Яндекс Директ</div>
+    <table>
+      <thead><tr><th>Период</th><th>Расход</th><th>Корз+сохр</th><th>Продаж</th><th>Выручка</th><th>ROAS</th></tr></thead>
+      <tbody>
+        <tr><td>27.04–03.05</td><td>39 502</td><td>1 210</td><td>183</td><td>391 372</td><td><span class="up">9,9x</span></td></tr>
+        <tr><td>04.05–10.05</td><td>43 624</td><td>694</td><td>70</td><td>143 224</td><td>3,28x</td></tr>
+        <tr><td>11.05–17.05</td><td>38 966</td><td>729</td><td>77</td><td>160 012</td><td>4,11x</td></tr>
+        <tr><td>18.05–24.05</td><td>34 624</td><td>600</td><td>59</td><td>129 500</td><td>3,74x</td></tr>
+        <tr><td>25.05–31.05</td><td>33 675</td><td>534</td><td>72</td><td>163 549</td><td>4,86x</td></tr>
+        <tr class="tr-may"><td>ИТОГО</td><td>190 391</td><td>3 767</td><td>461</td><td><strong>987 657</strong></td><td><strong>5,19x</strong></td></tr>
+        <tr class="sep"><td>«Чистый май» (04.05–31.05)</td><td>150 889</td><td>2 557</td><td>278</td><td>596 285</td><td><strong>3,95x</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-t">Aksolagen · Яндекс Директ</div>
+    <table>
+      <thead><tr><th>Период</th><th>Расход</th><th>Корз+сохр</th><th>Продаж</th><th>Выручка</th><th>ROAS</th></tr></thead>
+      <tbody>
+        <tr><td>27.04–03.05</td><td>17 669</td><td>369</td><td>23</td><td>55 364</td><td>3,13x</td></tr>
+        <tr><td>04.05–10.05</td><td>19 701</td><td>429</td><td>27</td><td>73 000</td><td>3,71x</td></tr>
+        <tr><td>11.05–17.05</td><td>19 409</td><td>347</td><td>21</td><td>56 485</td><td>2,91x</td></tr>
+        <tr><td>18.05–24.05</td><td>19 631</td><td>263</td><td>12</td><td>35 686</td><td class="dn">1,82x</td></tr>
+        <tr><td>25.05–31.05</td><td>23 202</td><td>286</td><td>18</td><td>47 638</td><td class="dn">2,05x</td></tr>
+        <tr class="tr-may"><td>ИТОГО</td><td>99 612</td><td>1 694</td><td>101</td><td><strong>268 173</strong></td><td><strong>2,69x</strong></td></tr>
+        <tr class="sep"><td>«Чистый май» (04.05–31.05)</td><td>81 943</td><td>1 325</td><td>78</td><td>212 809</td><td><strong>2,60x</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card mb2">
+  <div class="card-t">Динамика ДРР по неделям — Яндекс Директ</div>
+  <div class="ch-md"><canvas id="mayDrrChart"></canvas></div>
+</div>
+
+<!-- ВЫВОДЫ ПО МАЮ -->
+<div class="slabel may"><span class="snum">6</span>Ключевые выводы по маю</div>
+<div class="insight-grid mb2">
+  <div class="insight pos">
+    <div class="i-t">🚀 It's Collagen — лидер мая</div>
+    <p>Единственный бренд с двузначным ростом всех показателей: блогеры +26% выручка к апрелю (1,16 млн ₽), ROAS 3,88x против 3,29x. Драйвер — интеграция в MAX «anasty_cooking» с ROAS 9,25x (243 404 ₽ выручка при бюджете 26 300 ₽). Канал MAX становится новым перспективным направлением для бренда.</p>
+  </div>
+  <div class="insight pos">
+    <div class="i-t">💎 Aksolagen — ROAS удержал планку 4,36x</div>
+    <p>Выручка просела на 21,4% к рекордному апрелю (1,65 vs 2,1 млн ₽) — это нормальная просадка для категории нутрицевтиков в мае. Но ROAS вырос с апрельских 4,43x до 4,36x — реально на том же уровне. Это значит, что эффективность вложений сохранилась, просто общий объём спроса в категории снизился. Звёзды мая: club233483747 (ROAS 10,1x) и uunefedova_russ (4,13x).</p>
+  </div>
+  <div class="insight warn">
+    <div class="i-t">⚠️ Aksolagen Яндекс Директ — рост ДРР во второй половине мая</div>
+    <p>Если в начале мая ДРР держался 27–34%, то на третьей и четвёртой неделях вырос до 48–55%. Это прямой эффект сезонной просадки + проблем со связью. По чистому маю ROAS 2,60x — ниже целевого 3x. <strong>Рекомендация:</strong> в июне снизить расход на эту вертикаль на 15–20% или перераспределить в пользу блогеров, где эффективность выше.</p>
+  </div>
+  <div class="insight warn">
+    <div class="i-t">🐾 Binn Pets — баланс на грани</div>
+    <p>Выручка 321 807 ₽ (≈ апрель). ROAS с ассоциированными продажами 2,82x — упал с 3,47x в апреле. Но ассоциированные продажи продолжают расти (174→215 тыс. ₽, +23%). Канал YouTube для Binn проседает (ладыка_шаннакира: ROAS 0,74x при бюджете 37 869 ₽). <strong>Рекомендация:</strong> перевести бюджет YouTube в Telegram/MAX, где Vlenika стабильно даёт 2-3x.</p>
+  </div>
+  <div class="insight pos">
+    <div class="i-t">🟣 Эффективность маркетинга выросла, несмотря на категорийную просадку</div>
+    <p>Объединённый ROAS блогерского канала по 3 брендам в мае: <strong>3,95x</strong> против 3,52x в апреле. Корзины: <strong>15 317</strong> (15 291 в апреле). Это означает: маркетинговая команда смогла поймать вовлечённость на фоне общего снижения покупательского спроса. Половина мая под проблемами связи — а итог лучше предыдущего месяца по эффективности.</p>
+  </div>
+  <div class="insight may">
+    <div class="i-t">📡 Эффект блокировок интернета 1–9 мая</div>
+    <p>Большая часть Aksolagen-интеграций в мае пришлась на даты 12–31 мая (только 1 интеграция 12.05). Это сознательная стратегия — команда не размещала интеграции в дни массовых сбоев связи, чтобы не «спалить» бюджет на тех, кто не сможет перейти по ссылке. Аналогично у It's Collagen: первая интеграция 6.05, основной поток с 13.05.</p>
+  </div>
+</div>
+
+<!-- ПРОГНОЗ Q2 -->
+<div class="slabel may"><span class="snum">7</span>Прогноз на Q2 2026 (Апрель + Май + Июнь)</div>
+
+<div class="alert alert-v">
+  <i>🔮</i>
+  <div>
+    <strong>Базовая методология прогноза</strong> Использую факт за апрель + май + сезонную поправку на июнь (исторически июнь = май × 0,92 для категории нутрицевтиков на маркетплейсах; для зоотоваров ≈ × 1,05 из-за стабильного спроса). Закладываю восстановление Aksolagen в июне за счёт нормализации связи и продолжающейся работы с проверенными блогерами.
+  </div>
+</div>
+
+<div class="card mb2" style="overflow-x:auto">
+  <table class="tot-table">
+    <thead>
+      <tr>
+        <th>Бренд / метрика</th>
+        <th>Апрель (факт)</th>
+        <th>Май (факт)</th>
+        <th class="may-hdr">Июнь (прогноз)</th>
+        <th class="may-hdr">Q2 итог (прогноз)</th>
+        <th>Q2 vs Q1</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="tr-aks"><td><span class="tag tag-aks">AKS</span> Выручка</td><td>2 100 404</td><td>1 650 702</td><td><strong>1 750 000</strong></td><td><strong>5 501 106</strong></td><td class="up">+136%</td></tr>
+      <tr class="tr-aks"><td><span class="tag tag-aks">AKS</span> ROAS</td><td>4,43x</td><td>4,36x</td><td><strong>4,2x</strong></td><td><strong>4,3x</strong></td><td class="up">+40%</td></tr>
+      <tr class="tr-its"><td><span class="tag tag-its">ITS</span> Выручка</td><td>920 979</td><td>1 159 898</td><td><strong>1 080 000</strong></td><td><strong>3 160 877</strong></td><td class="up">+131%</td></tr>
+      <tr class="tr-its"><td><span class="tag tag-its">ITS</span> ROAS</td><td>3,29x</td><td>3,88x</td><td><strong>3,6x</strong></td><td><strong>3,6x</strong></td><td class="up">+13%</td></tr>
+      <tr class="tr-binn"><td><span class="tag tag-binn">BINN</span> Выручка</td><td>323 992</td><td>321 807</td><td><strong>340 000</strong></td><td><strong>985 799</strong></td><td class="up">+15%</td></tr>
+      <tr class="tr-binn"><td><span class="tag tag-binn">BINN</span> ROAS (с ассоц.)</td><td>3,47x</td><td>2,82x</td><td><strong>3,0x</strong></td><td><strong>3,1x</strong></td><td class="up">+18%</td></tr>
+      <tr class="sep2-may"><td>🟣 Q2 ИТОГО (блогеры)</td><td>3 345 375</td><td>3 132 407</td><td><strong>≈ 3 170 000</strong></td><td><strong>≈ 9 647 782 ₽</strong></td><td class="up">+84%</td></tr>
+      <tr class="sep2"><td>Q1 (факт)</td><td colspan="2" style="text-align:left">5 240 654 ₽</td><td colspan="3" class="em">для сравнения</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- РИСКИ И ВОЗМОЖНОСТИ Q2 -->
+<div class="grid2 mb2">
+  <div class="card">
+    <div class="card-t" style="color:var(--up)">✅ Возможности Q2</div>
+    <table>
+      <tbody>
+        <tr><td>1. Масштабирование канала MAX (anasty_cooking ROAS 9,25x — повторить)</td></tr>
+        <tr><td>2. Расширение пула «звёздных» блогеров AKS: club233483747, club231079200, redbarlady</td></tr>
+        <tr><td>3. AlyonaBel22 для ITS — стабильно 6-12x ROAS при бюджете 9 000 ₽</td></tr>
+        <tr><td>4. Рост ассоц. продаж BINN (+27% к апрелю) — продолжать инвестировать в воронку</td></tr>
+        <tr><td>5. Подготовка кампаний к осеннему высокому сезону (август–октябрь)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-t" style="color:var(--dn)">⚠️ Риски Q2</div>
+    <table>
+      <tbody>
+        <tr><td>1. AKS Яндекс Директ: ДРР растёт, ROAS ниже 3x → рассмотреть снижение бюджета</td></tr>
+        <tr><td>2. ITS конверсия корзина→заказ 8,3% (с 12,9% в марте) — давит на эффективность</td></tr>
+        <tr><td>3. Июнь традиционно слабее мая для зожников/нутры (отпуска, дачи)</td></tr>
+        <tr><td>4. Возможны новые сбои связи (учитывать при планировании дат интеграций)</td></tr>
+        <tr><td>5. BINN: 50% выручки — ассоц. продажи; если изменится атрибуция WB/Ozon, можем «потерять» эффект</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--                     СВОДНЫЙ ОБЗОР                            -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div id="sec-all" class="tab">
+<div class="container">
+
+<div class="alert alert-g">
+  <i>📊</i>
+  <div><strong>Сводный обзор: Январь — Май 2026</strong> 89 интеграций по 3 брендам, 8,7 млн ₽ выручки с блогеров, ROAS 3,52x. Май превзошёл апрель по эффективности маркетинга, несмотря на категорийную просадку и проблемы со связью 1–9 мая.</div>
+</div>
+
+<div class="slabel global"><span class="snum">★</span>Все бренды × все месяцы — единая сводка</div>
+<div class="card mb2" style="overflow-x:auto">
+  <table class="tot-table">
+    <thead>
+      <tr><th>Бренд / Месяц</th><th>Интег.</th><th>Переходы</th><th>Корзины</th><th>Заказы</th><th>Выручка, ₽</th><th>Бюджет, ₽</th><th>ROAS</th></tr>
+    </thead>
+    <tbody>
+      <!-- AKS -->
+      <tr class="tr-aks"><td><span class="tag tag-aks">AKS</span> Январь</td><td>8</td><td>17 731</td><td>4 041</td><td>266</td><td>621 944</td><td>214 044</td><td>2,91x</td></tr>
+      <tr class="tr-aks"><td><span class="tag tag-aks">AKS</span> Февраль</td><td>10</td><td>20 370</td><td>4 039</td><td>281</td><td>768 114</td><td>244 155</td><td>3,15x</td></tr>
+      <tr class="tr-aks"><td><span class="tag tag-aks">AKS</span> Март</td><td>10</td><td>20 285</td><td>4 713</td><td>391</td><td>939 414</td><td>300 680</td><td>3,12x</td></tr>
+      <tr class="tr-aks"><td><span class="tag tag-aks">AKS</span> Апрель</td><td>16</td><td>36 955</td><td>8 927</td><td>1 041</td><td>2 100 404</td><td>474 578</td><td>4,43x</td></tr>
+      <tr class="tr-aks" style="background:#f5f3ff"><td><span class="tag tag-aks">AKS</span> <strong>Май ⚡</strong></td><td>14</td><td>26 956</td><td>6 590</td><td>729</td><td><strong>1 650 702</strong></td><td>378 907</td><td><strong>4,36x</strong></td></tr>
+      <!-- ITS -->
+      <tr class="tr-its"><td><span class="tag tag-its">ITS</span> Январь</td><td>3</td><td>4 417</td><td>875</td><td>140</td><td>205 042</td><td>33 687</td><td>6,09x</td></tr>
+      <tr class="tr-its"><td><span class="tag tag-its">ITS</span> Февраль</td><td>9</td><td>11 463</td><td>2 518</td><td>261</td><td>436 392</td><td>161 774</td><td>2,70x</td></tr>
+      <tr class="tr-its"><td><span class="tag tag-its">ITS</span> Март</td><td>11</td><td>15 294</td><td>3 320</td><td>428</td><td>726 604</td><td>228 212</td><td>3,18x</td></tr>
+      <tr class="tr-its"><td><span class="tag tag-its">ITS</span> Апрель</td><td>13</td><td>23 655</td><td>6 364</td><td>527</td><td>920 979</td><td>279 963</td><td>3,29x</td></tr>
+      <tr class="tr-its" style="background:#f5f3ff"><td><span class="tag tag-its">ITS</span> <strong>Май ⚡</strong></td><td>16</td><td>26 817</td><td>8 109</td><td>629</td><td><strong>1 159 898</strong></td><td>299 141</td><td><strong>3,88x</strong></td></tr>
+      <!-- BINN -->
+      <tr class="tr-binn"><td><span class="tag tag-binn">BINN</span> Январь</td><td>8</td><td>5 402</td><td>780</td><td>152</td><td>276 101</td><td>124 796</td><td>2,21x</td></tr>
+      <tr class="tr-binn"><td><span class="tag tag-binn">BINN</span> Февраль</td><td>7</td><td>4 724</td><td>836</td><td>165</td><td>318 363</td><td>113 436</td><td>2,81x</td></tr>
+      <tr class="tr-binn"><td><span class="tag tag-binn">BINN</span> Март</td><td>6</td><td>2 802</td><td>401</td><td>91</td><td>267 043</td><td>88 669</td><td>3,01x</td></tr>
+      <tr class="tr-binn"><td><span class="tag tag-binn">BINN</span> Апрель</td><td>6</td><td>2 777</td><td>388</td><td>54</td><td>323 992</td><td>93 351</td><td>3,47x</td></tr>
+      <tr class="tr-binn" style="background:#f5f3ff"><td><span class="tag tag-binn">BINN</span> <strong>Май ⚡</strong></td><td>8</td><td>5 385</td><td>618</td><td>187</td><td><strong>321 807</strong></td><td>113 947</td><td><strong>2,82x</strong></td></tr>
+      <!-- TOTALS -->
+      <tr class="sep2"><td>🔷 Q1 ИТОГО</td><td>72</td><td>101 764</td><td>21 527</td><td>1 974</td><td>5 240 654</td><td>1 509 453</td><td>3,47x</td></tr>
+      <tr class="sep2"><td>⚡ Апрель ИТОГО</td><td>35</td><td>63 387</td><td>15 679</td><td>1 622</td><td>3 345 375</td><td>847 892</td><td>3,95x</td></tr>
+      <tr class="sep2-may"><td>🟣 МАЙ ИТОГО ⚡</td><td>38</td><td>59 158</td><td>15 317</td><td>1 545</td><td><strong>3 132 407</strong></td><td>791 995</td><td><strong>3,95x</strong></td></tr>
+      <tr class="sep2"><td>🌟 ИТОГО Янв–Май</td><td>145</td><td>224 309</td><td>52 523</td><td>5 141</td><td><strong>11 718 436</strong></td><td>3 149 340</td><td><strong>3,72x</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- GLOBAL CHARTS -->
+<div class="slabel global"><span class="snum">1</span>Все 3 бренда — выручка с блогеров</div>
+<div class="card mb2"><div class="ch-lg"><canvas id="globRev"></canvas></div></div>
+
+<div class="slabel global"><span class="snum">2</span>Все 3 бренда — ROAS</div>
+<div class="card mb2"><div class="ch-md"><canvas id="globRoas"></canvas></div></div>
+
+<div class="slabel global"><span class="snum">3</span>Корзины и заказы по брендам</div>
+<div class="grid2 mb2">
+  <div class="card"><div class="card-t">Корзины, шт.</div><div class="ch-sm"><canvas id="globKorzin"></canvas></div></div>
+  <div class="card"><div class="card-t">Заказы, шт.</div><div class="ch-sm"><canvas id="globOrders"></canvas></div></div>
+</div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--                     AKSOLAGEN                                -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div id="sec-aks" class="tab">
+<div class="container">
+
+<div class="alert alert-b">
+  <i>🔵</i>
+  <div><strong>Aksolagen: Январь–Май</strong> 58 интеграций, 6,08 млн ₽ выручка, ROAS 3,80x. Май: 1,65 млн ₽ при ROAS 4,36x — почти повторил рекордный апрель по эффективности при просадке выручки на 21% из-за сезонности.</div>
+</div>
+
+<div class="slabel aks"><span class="snum">1</span>Выручка</div>
+<div class="card mb2"><div class="ch-md"><canvas id="aksRev"></canvas></div></div>
+
+<div class="slabel aks"><span class="snum">2</span>Заказы</div>
+<div class="card mb2"><div class="ch-sm"><canvas id="aksOrd"></canvas></div></div>
+
+<div class="slabel aks"><span class="snum">3</span>ROAS</div>
+<div class="card mb2"><div class="ch-sm"><canvas id="aksRoas"></canvas></div></div>
+
+<div class="slabel aks"><span class="snum">4</span>Средние показатели на 1 интеграцию</div>
+<div class="card mb2" style="overflow-x:auto">
+  <table>
+    <thead><tr><th>Показатель</th><th>Янв (8)</th><th>Фев (10)</th><th>Март (10)</th><th>Апр (16)</th><th>Май (14)</th><th>Δ май/апр</th></tr></thead>
+    <tbody>
+      <tr><td>Переходы</td><td>2 216</td><td>2 037</td><td>2 029</td><td>2 310</td><td><strong>1 925</strong></td><td class="dn">−16,7%</td></tr>
+      <tr class="sep"><td>Корзины</td><td>505</td><td>404</td><td>471</td><td>558</td><td><strong>471</strong></td><td class="dn">−15,7%</td></tr>
+      <tr><td>Заказы</td><td>33</td><td>28</td><td>39</td><td>65</td><td><strong>52</strong></td><td class="dn">−20,0%</td></tr>
+      <tr class="sep"><td>Сумма заказов, ₽</td><td>77 743</td><td>76 811</td><td>93 941</td><td>131 275</td><td><strong>117 907</strong></td><td class="dn">−10,2%</td></tr>
+      <tr><td>Конв. в корзину</td><td>22,8%</td><td>19,8%</td><td>23,2%</td><td>24,2%</td><td><strong>24,4%</strong></td><td class="up">+0,8%</td></tr>
+      <tr class="sep"><td>Конв. корзина→заказ</td><td>6,6%</td><td>7,0%</td><td>8,3%</td><td>11,7%</td><td><strong>11,1%</strong></td><td class="dn">−5,1%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="slabel aks"><span class="snum">5</span>Интеграции и выручка</div>
+<div class="grid2 mb2">
+  <div class="card"><div class="card-t">Интеграций</div><div class="ch-sm"><canvas id="aksInteg"></canvas></div></div>
+  <div class="card"><div class="card-t">Выручка, ₽</div><div class="ch-sm"><canvas id="aksRevBar"></canvas></div></div>
+</div>
+
+<div class="slabel aks"><span class="snum">6</span>Полная таблица по месяцам</div>
+<div class="card mb2" style="overflow-x:auto">
+  <table class="tot-table">
+    <thead><tr><th>Метрика</th><th>Янв</th><th>Фев</th><th>Март</th><th>Апр</th><th class="may-hdr">Май</th><th>Δ май/апр</th></tr></thead>
+    <tbody>
+      <tr><td>Переходы</td><td>17 731</td><td>20 370</td><td>20 285</td><td>36 955</td><td><strong>26 956</strong></td><td class="dn">−27,1%</td></tr>
+      <tr class="sep2-may"><td>Корзины</td><td>4 041</td><td>4 039</td><td>4 713</td><td>8 927</td><td><strong>6 590</strong></td><td class="dn">−26,2%</td></tr>
+      <tr><td>Заказы</td><td>266</td><td>281</td><td>391</td><td>1 041</td><td><strong>729</strong></td><td class="dn">−30,0%</td></tr>
+      <tr class="sep2-may"><td>Выручка, ₽</td><td>621 944</td><td>768 114</td><td>939 414</td><td>2 100 404</td><td><strong>1 650 702</strong></td><td class="dn">−21,4%</td></tr>
+      <tr><td>Бюджет, ₽</td><td>214 044</td><td>244 155</td><td>300 680</td><td>474 578</td><td><strong>378 907</strong></td><td class="dn">−20,2%</td></tr>
+      <tr class="sep2-may"><td>ROAS</td><td>2,91x</td><td>3,15x</td><td>3,12x</td><td>4,43x</td><td><strong>4,36x</strong></td><td class="dn">−1,6%</td></tr>
+      <tr><td>Конв. в корзину</td><td>22,8%</td><td>19,8%</td><td>23,2%</td><td>24,2%</td><td><strong>24,4%</strong></td><td class="up">+0,8%</td></tr>
+      <tr class="sep2-may"><td>Конв. корзина→заказ</td><td>6,6%</td><td>7,0%</td><td>8,3%</td><td>11,7%</td><td><strong>11,1%</strong></td><td class="dn">−5,1%</td></tr>
+      <tr><td>Интеграций</td><td>8</td><td>10</td><td>10</td><td>16</td><td><strong>14</strong></td><td class="dn">−2</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--                     IT'S COLLAGEN                            -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div id="sec-its" class="tab">
+<div class="container">
+
+<div class="alert alert-g">
+  <i>🩷</i>
+  <div><strong>It's Collagen: Январь–Май</strong> 52 интеграции, 3,45 млн ₽ выручка, ROAS 3,46x. <strong>Май — лучший месяц по эффективности:</strong> 1,16 млн ₽ выручка (+26% к апрелю) при ROAS 3,88x. Корзины 8 109 шт. — рекорд бренда.</div>
+</div>
+
+<div class="slabel its"><span class="snum">1</span>Выручка</div>
+<div class="card mb2"><div class="ch-md"><canvas id="itsRev"></canvas></div></div>
+
+<div class="slabel its"><span class="snum">2</span>Заказы</div>
+<div class="card mb2"><div class="ch-sm"><canvas id="itsOrd"></canvas></div></div>
+
+<div class="slabel its"><span class="snum">3</span>ROAS</div>
+<div class="card mb2"><div class="ch-sm"><canvas id="itsRoas"></canvas></div></div>
+
+<div class="slabel its"><span class="snum">4</span>Средние показатели на 1 интеграцию</div>
+<div class="card mb2" style="overflow-x:auto">
+  <table>
+    <thead><tr><th>Показатель</th><th>Янв (3)</th><th>Фев (9)</th><th>Март (11)</th><th>Апр (13)</th><th>Май (16)</th><th>Δ май/апр</th></tr></thead>
+    <tbody>
+      <tr><td>Переходы</td><td>1 472</td><td>1 274</td><td>1 390</td><td>1 820</td><td><strong>1 676</strong></td><td class="dn">−7,9%</td></tr>
+      <tr class="sep"><td>Корзины</td><td>292</td><td>280</td><td>302</td><td>490</td><td><strong>507</strong></td><td class="up">+3,5%</td></tr>
+      <tr><td>Заказы</td><td>47</td><td>29</td><td>39</td><td>41</td><td><strong>39</strong></td><td class="dn">−4,9%</td></tr>
+      <tr class="sep"><td>Сумма заказов, ₽</td><td>68 347</td><td>48 488</td><td>66 055</td><td>70 844</td><td><strong>72 494</strong></td><td class="up">+2,3%</td></tr>
+      <tr><td>Конв. в корзину</td><td>19,8%</td><td>22,0%</td><td>21,7%</td><td>26,9%</td><td><strong>30,2%</strong></td><td class="up">+12,3%</td></tr>
+      <tr class="sep"><td>Конв. корзина→заказ</td><td>16,0%</td><td>10,4%</td><td>12,9%</td><td>8,3%</td><td><strong>7,8%</strong></td><td class="dn">−6,0%</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="slabel its"><span class="snum">5</span>Интеграции и выручка</div>
+<div class="grid2 mb2">
+  <div class="card"><div class="card-t">Интеграций</div><div class="ch-sm"><canvas id="itsInteg"></canvas></div></div>
+  <div class="card"><div class="card-t">Выручка, ₽</div><div class="ch-sm"><canvas id="itsRevBar"></canvas></div></div>
+</div>
+
+<div class="slabel its"><span class="snum">6</span>Полная таблица по месяцам</div>
+<div class="card mb2" style="overflow-x:auto">
+  <table class="tot-table">
+    <thead><tr><th>Метрика</th><th>Янв</th><th>Фев</th><th>Март</th><th>Апр</th><th class="may-hdr">Май</th><th>Δ май/апр</th></tr></thead>
+    <tbody>
+      <tr><td>Переходы</td><td>4 417</td><td>11 463</td><td>15 294</td><td>23 655</td><td><strong>26 817</strong></td><td class="up">+13,4%</td></tr>
+      <tr class="sep2-may"><td>Корзины</td><td>875</td><td>2 518</td><td>3 320</td><td>6 364</td><td><strong>8 109</strong></td><td class="up">+27,4%</td></tr>
+      <tr><td>Заказы</td><td>140</td><td>261</td><td>428</td><td>527</td><td><strong>629</strong></td><td class="up">+19,4%</td></tr>
+      <tr class="sep2-may"><td>Выручка, ₽</td><td>205 042</td><td>436 392</td><td>726 604</td><td>920 979</td><td><strong>1 159 898</strong></td><td class="up">+26,0%</td></tr>
+      <tr><td>Бюджет, ₽</td><td>33 687</td><td>161 774</td><td>228 212</td><td>279 963</td><td><strong>299 141</strong></td><td class="up">+6,8%</td></tr>
+      <tr class="sep2-may"><td>ROAS</td><td>6,09x</td><td>2,70x</td><td>3,18x</td><td>3,29x</td><td><strong>3,88x</strong></td><td class="up">+17,9%</td></tr>
+      <tr><td>Конв. в корзину</td><td>19,8%</td><td>22,0%</td><td>21,7%</td><td>26,9%</td><td><strong>30,2%</strong></td><td class="up">+12,3%</td></tr>
+      <tr class="sep2-may"><td>Конв. корзина→заказ</td><td>16,0%</td><td>10,4%</td><td>12,9%</td><td>8,3%</td><td><strong>7,8%</strong></td><td class="dn">−6,0%</td></tr>
+      <tr><td>Интеграций</td><td>3</td><td>9</td><td>11</td><td>13</td><td><strong>16</strong></td><td class="up">+3</td></tr>
+    </tbody>
+  </table>
+</div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--                     BINN PETS                                -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div id="sec-binn" class="tab">
+<div class="container">
+
+<div class="alert alert-t">
+  <i>🐾</i>
+  <div><strong>Binn Pets: Январь–Май</strong> 35 интеграций, 1,51 млн ₽ выручка (с ассоциированными), ROAS 2,86x. <strong>Ассоциированные продажи продолжают расти (215 тыс. ₽ в мае — рекорд)</strong>, формируя более 66% выручки. UTM-атрибуция систематически занижает реальную эффективность.</div>
+</div>
+
+<div class="slabel binn"><span class="snum">1</span>ROAS: UTM-only vs с ассоциированными продажами</div>
+<div class="card mb2"><div class="ch-md"><canvas id="binnRoas"></canvas></div></div>
+
+<div class="slabel binn"><span class="snum">2</span>Структура выручки</div>
+<div class="card mb2"><div class="ch-md"><canvas id="binnRevStack"></canvas></div></div>
+
+<div class="slabel binn"><span class="snum">3</span>Воронка: переходы → корзины → заказы</div>
+<div class="card mb2"><div class="ch-md"><canvas id="binnFunnel"></canvas></div></div>
+
+<div class="slabel binn"><span class="snum">4</span>Полная таблица по месяцам</div>
+<div class="card mb2" style="overflow-x:auto">
+  <table class="tot-table">
+    <thead><tr><th>Метрика</th><th>Янв</th><th>Фев</th><th>Март</th><th>Апр</th><th class="may-hdr">Май</th><th>Δ май/апр</th></tr></thead>
+    <tbody>
+      <tr><td>Интеграций</td><td>8</td><td>7</td><td>6</td><td>6</td><td><strong>8</strong></td><td class="up">+2</td></tr>
+      <tr class="sep2-may"><td>Переходы</td><td>5 402</td><td>4 724</td><td>2 802</td><td>2 777</td><td><strong>5 385</strong></td><td class="up">+93,9%</td></tr>
+      <tr><td>Корзины</td><td>780</td><td>836</td><td>401</td><td>388</td><td><strong>618</strong></td><td class="up">+59,3%</td></tr>
+      <tr class="sep2-may"><td>Заказы (UTM)</td><td>152</td><td>165</td><td>91</td><td>54</td><td><strong>37</strong></td><td class="dn">−31,5%</td></tr>
+      <tr><td>Выручка UTM, ₽</td><td>209 726</td><td>211 081</td><td>130 530</td><td>149 533</td><td><strong>107 218</strong></td><td class="dn">−28,3%</td></tr>
+      <tr class="sep2-may"><td>Ассоц. продажи, ₽</td><td>66 375</td><td>107 282</td><td>136 513</td><td>174 459</td><td><strong>214 589</strong></td><td class="up">+23,0%</td></tr>
+      <tr><td>Выручка итого, ₽</td><td>276 101</td><td>318 363</td><td>267 043</td><td>323 992</td><td><strong>321 807</strong></td><td class="dn">−0,7%</td></tr>
+      <tr class="sep2-may"><td>Бюджет, ₽</td><td>124 796</td><td>113 436</td><td>88 669</td><td>93 351</td><td><strong>113 947</strong></td><td class="up">+22,1%</td></tr>
+      <tr><td>ROAS по UTM</td><td>1,68x</td><td>1,86x</td><td>1,47x</td><td>1,60x</td><td><strong>0,94x</strong></td><td class="dn">−41,3%</td></tr>
+      <tr class="sep2-may"><td>ROAS с ассоц.</td><td>2,21x</td><td>2,81x</td><td>3,01x</td><td>3,47x</td><td><strong>2,82x</strong></td><td class="dn">−18,7%</td></tr>
+      <tr><td>Доля ассоц. в выручке</td><td>24,0%</td><td>33,7%</td><td>51,1%</td><td>53,8%</td><td><strong>66,7%</strong></td><td class="up">+12,9 пп</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="insight-grid mb2">
+  <div class="insight pos">
+    <div class="i-t">📈 Ассоц. продажи — рекорд: 214 589 ₽ (+23% к апрелю)</div>
+    <p>Доля ассоц. в выручке выросла до 66,7%. Это сильный сигнал: блогерская работа Binn формирует отложенный спрос. Аудитория видит интеграции, узнаёт бренд, и потом покупает (но не по UTM-ссылке). Это типично для зоотоваров — решения принимаются обдуманно, с консультацией ветеринара.</p>
+  </div>
+  <div class="insight warn">
+    <div class="i-t">⚠️ UTM-канал просел сильно: −41% по ROAS</div>
+    <p>YouTube ladys_hanna_kira: ROAS 0,74x при бюджете 37 869 ₽ — −10 тыс. ₽ в минус. Это ⅓ месячного бюджета на одну неэффективную интеграцию. Рекомендация: <strong>перераспределить YouTube-бюджет в Telegram/MAX</strong>, где блогеры Vlenika и VetSurgerOphthalmolog стабильно дают 1,5-3x ROAS.</p>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════ -->
+<!--                     КОНТЕКСТ И ТАРГЕТ                        -->
+<!-- ════════════════════════════════════════════════════════════ -->
+<div id="sec-ctx" class="tab">
+<div class="container">
+
+<div class="alert alert-y">
+  <i>📈</i>
+  <div><strong>Контекст и таргет — Январь–Май 2026</strong> Активный канал — <strong>Яндекс Директ для ITS и AKS</strong> (с конца марта). ITS показывает выдающийся годовой ROAS 5,28x при ДРР 19,0% — отлично для нутрицевтиков. AKS — 2,10x при ДРР 47,6% — нужна оптимизация. ВКонтакте таргет — тестовая активность для ITS.</div>
+</div>
+
+<!-- HEADLINE -->
+<div class="slabel ctx"><span class="snum">★</span>Накопленные результаты — год 2026 (Янв–Май)</div>
+<div class="hl-row mb2">
+  <div class="hl b">
+    <div class="lbl">ITS Яндекс — выручка</div>
+    <div class="val">1 899 206 ₽</div>
+    <div class="sub">Расход 360 053 ₽ · ROAS 5,28x · ДРР 19,0%</div>
+  </div>
+  <div class="hl o">
+    <div class="lbl">AKS Яндекс — выручка</div>
+    <div class="val">353 172 ₽</div>
+    <div class="sub">Расход 168 111 ₽ · ROAS 2,10x · ДРР 47,6%</div>
+  </div>
+  <div class="hl p">
+    <div class="lbl">ITS ВК таргет — выручка</div>
+    <div class="val">23 646 ₽</div>
+    <div class="sub">Расход 38 977 ₽ · ROAS 0,61x · тестовый канал</div>
+  </div>
+  <div class="hl v">
+    <div class="lbl">Итого контекст + таргет</div>
+    <div class="val">2 276 024 ₽</div>
+    <div class="sub">Расход 567 141 ₽ · ROAS 4,01x · ДРР 24,9%</div>
+  </div>
+</div>
+
+<!-- ITS YANDEX -->
+<div class="slabel ctx"><span class="snum">1</span>It's Collagen · Яндекс Директ — недельная динамика</div>
+<div class="card mb2"><div class="ch-md"><canvas id="itsYdChart"></canvas></div></div>
+
+<div class="card mb2" style="overflow-x:auto">
+  <table>
+    <thead><tr><th>Период</th><th>Расход</th><th>Корз+сохр</th><th>Цена</th><th>Продаж</th><th>Выручка</th><th>ДРР</th></tr></thead>
+    <tbody>
+      <tr><td>05.01–11.01</td><td>29 460</td><td>274</td><td>108 ₽</td><td>38</td><td>79 251</td><td>37,2%</td></tr>
+      <tr><td>30.03–05.04</td><td>33 335</td><td>347</td><td>96 ₽</td><td>62</td><td>132 995</td><td>25,1%</td></tr>
+      <tr><td>06.04–12.04</td><td>38 465</td><td>562</td><td>68 ₽</td><td>72</td><td>155 538</td><td>24,7%</td></tr>
+      <tr><td>13.04–19.04</td><td>34 758</td><td>659</td><td>53 ₽</td><td>159</td><td>357 039</td><td><span class="up">9,7%</span></td></tr>
+      <tr><td>20.04–26.04</td><td>33 644</td><td>489</td><td>69 ₽</td><td>81</td><td>186 726</td><td>18,0%</td></tr>
+      <tr><td>27.04–03.05</td><td>39 502</td><td>1 210</td><td>33 ₽</td><td>183</td><td>391 372</td><td><span class="up">10,1%</span></td></tr>
+      <tr class="tr-may"><td>04.05–10.05</td><td>43 624</td><td>694</td><td>63 ₽</td><td>70</td><td>143 224</td><td>30,5%</td></tr>
+      <tr class="tr-may"><td>11.05–17.05</td><td>38 966</td><td>729</td><td>53 ₽</td><td>77</td><td>160 012</td><td>24,4%</td></tr>
+      <tr class="tr-may"><td>18.05–24.05</td><td>34 624</td><td>600</td><td>58 ₽</td><td>59</td><td>129 500</td><td>26,7%</td></tr>
+      <tr class="tr-may"><td>25.05–31.05</td><td>33 675</td><td>534</td><td>63 ₽</td><td>72</td><td>163 549</td><td>20,6%</td></tr>
+      <tr class="sep2"><td>ИТОГО (Янв–Май)</td><td>360 053</td><td>6 098</td><td>59 ₽</td><td>873</td><td><strong>1 899 206</strong></td><td><strong>19,0%</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- AKS YANDEX -->
+<div class="slabel ctx"><span class="snum">2</span>Aksolagen · Яндекс Директ — недельная динамика</div>
+<div class="card mb2"><div class="ch-md"><canvas id="aksYdChart"></canvas></div></div>
+
+<div class="card mb2" style="overflow-x:auto">
+  <table>
+    <thead><tr><th>Период</th><th>Расход</th><th>Корз+сохр</th><th>Цена</th><th>Продаж</th><th>Выручка</th><th>ДРР</th></tr></thead>
+    <tbody>
+      <tr><td>05.01–11.01</td><td>13 336</td><td>48</td><td>278 ₽</td><td>2</td><td>4 322</td><td><span class="dn">308,6%</span></td></tr>
+      <tr><td>30.03–05.04</td><td>10 155</td><td>104</td><td>98 ₽</td><td>3</td><td>6 834</td><td><span class="dn">148,6%</span></td></tr>
+      <tr><td>06.04–12.04</td><td>17 981</td><td>231</td><td>78 ₽</td><td>4</td><td>11 108</td><td><span class="dn">161,9%</span></td></tr>
+      <tr><td>13.04–19.04</td><td>15 027</td><td>272</td><td>55 ₽</td><td>14</td><td>35 188</td><td>42,7%</td></tr>
+      <tr><td>20.04–26.04</td><td>12 000</td><td>251</td><td>48 ₽</td><td>10</td><td>27 547</td><td>43,6%</td></tr>
+      <tr><td>27.04–03.05</td><td>17 669</td><td>369</td><td>48 ₽</td><td>23</td><td>55 364</td><td>31,9%</td></tr>
+      <tr class="tr-may"><td>04.05–10.05</td><td>19 701</td><td>429</td><td>46 ₽</td><td>27</td><td>73 000</td><td>27,0%</td></tr>
+      <tr class="tr-may"><td>11.05–17.05</td><td>19 409</td><td>347</td><td>56 ₽</td><td>21</td><td>56 485</td><td>34,4%</td></tr>
+      <tr class="tr-may"><td>18.05–24.05</td><td>19 631</td><td>263</td><td>75 ₽</td><td>12</td><td>35 686</td><td><span class="dn">55,0%</span></td></tr>
+      <tr class="tr-may"><td>25.05–31.05</td><td>23 202</td><td>286</td><td>81 ₽</td><td>18</td><td>47 638</td><td><span class="dn">48,7%</span></td></tr>
+      <tr class="sep2"><td>ИТОГО (Янв–Май)</td><td>168 111</td><td>2 600</td><td>65 ₽</td><td>134</td><td><strong>353 172</strong></td><td><strong>47,6%</strong></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ВЫВОДЫ ПО КОНТЕКСТУ -->
+<div class="slabel ctx"><span class="snum">3</span>Выводы и рекомендации по контексту</div>
+<div class="insight-grid mb2">
+  <div class="insight pos">
+    <div class="i-t">🚀 ITS Яндекс — выдающаяся эффективность</div>
+    <p>ROAS 5,28x за 5 месяцев, ДРР 19% — топовые показатели для нутрицевтиков на маркетплейсах. Пик: 13.04–19.04 (ДРР 9,7%) и 27.04–03.05 (ДРР 10,1%). Цена корзины упала с 108 до 33–63 ₽. <strong>Рекомендация:</strong> увеличить бюджет на 30-50% в июне–июле, особенно после восстановления категории после летнего провала.</p>
+  </div>
+  <div class="insight warn">
+    <div class="i-t">⚠️ AKS Яндекс — ДРР превышает целевой</div>
+    <p>Годовой ROAS 2,10x при ДРР 47,6% — это убыточно с учётом маржи на маркетплейсе (типично 30-40%). Только в апреле начал выходить в плюс (ROAS 2,3x, ДРР 43%). В мае откат к ROAS 2,60x. <strong>Рекомендация:</strong> уменьшить бюджет на этом канале на 25-30% и перераспределить в блогеров AKS, где ROAS 4-5x.</p>
+  </div>
+  <div class="insight neg">
+    <div class="i-t">📉 ITS ВК — тестовая активность не окупается</div>
+    <p>ROAS 0,61x при расходе 39 тыс. ₽. Прямые продажи единичные. Канал работает только как ассистный — поэтому в продаж в окне почти нет. <strong>Рекомендация:</strong> либо радикально пересмотреть креативы и таргетинг, либо закрыть канал в июне.</p>
+  </div>
+  <div class="insight info">
+    <div class="i-t">📊 Общая картина: 1 ₽ → 4 ₽ выручки</div>
+    <p>Контекст+таргет за 5 месяцев: расход 567 141 ₽ → выручка 2 276 024 ₽ (ROAS 4,01x, ДРР 24,9%). Хороший результат для перформанса, особенно с учётом старта канала в январе. Главный драйвер — ITS Яндекс (83% выручки канала).</p>
+  </div>
+</div>
+
+</div>
+</div>
+
+<div class="footer">
+  Varseas · Маркетинговый отчёт Январь–Май 2026 · 3 бренда · Источники: лист «Блогеры», листы «Яндекс Директ», «ВК Таргет»
+</div>
+
+<script>
+// ── NAV ──
+function showT(id, btn) {
+  document.querySelectorAll('.tab').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nbt').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── CONSTANTS ──
+const M5 = ['Янв','Фев','Март','Апр','Май'];
+const AKS='#3b82f6', AKS2='#1d4ed8', AKS_BG='rgba(59,130,246,.15)';
+const ITS='#ec4899', ITS2='#be185d', ITS_BG='rgba(236,72,153,.15)';
+const BINN='#10b981', BINN2='#047857', BINN_BG='rgba(16,185,129,.15)';
+const MAY_C='#8b5cf6';
+const WARN='#f59e0b';
+
+const baseOpts = (cb) => ({
+  responsive:true, maintainAspectRatio:false,
+  interaction:{mode:'index',intersect:false},
+  plugins:{
+    legend:{position:'top',labels:{usePointStyle:true,pointStyle:'circle',padding:14,font:{size:12}}},
+    tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${cb(ctx.raw)}`}}
+  },
+  scales:{
+    x:{grid:{display:false},ticks:{font:{size:12}}},
+    y:{grid:{color:'#f0f2f7'},ticks:{font:{size:11},callback:cb}}
+  }
+});
+const fR = v => (v == null ? '—' : (v>=1000000?(v/1000000).toFixed(2)+'M ₽':v>=1000?(v/1000).toFixed(0)+'K ₽':v+'₽'));
+const fN = v => (v == null ? '—' : (v>=1000?(v/1000).toFixed(1)+'K':String(Math.round(v))));
+const fX = v => (v == null ? '—' : v.toFixed(2)+'x');
+const fP = v => (v == null ? '—' : v.toFixed(1)+'%');
+
+// MAY highlight plugin (last column)
+function mayPlugin() {
+  return {id:'mayBg', beforeDraw(c){
+    const {ctx, chartArea:{top,bottom,width}, scales:{x}} = c;
+    if (!x || x.ticks.length < 5) return;
+    const xm = x.getPixelForValue(4);
+    const hw = width / (x.ticks.length * 2);
+    ctx.save();
+    ctx.fillStyle = 'rgba(139,92,246,.07)';
+    ctx.fillRect(xm-hw, top, hw*2, bottom-top);
+    ctx.restore();
+  }};
+}
+const MP = [mayPlugin()];
+
+// ───────── MAY TAB ─────────
+new Chart('mayRevTrend',{
+  type:'line', plugins:MP,
+  data:{labels:M5, datasets:[
+    {label:'Aksolagen', data:[621944,768114,939414,2100404,1650702], borderColor:AKS, backgroundColor:AKS_BG, fill:true, tension:.4, pointRadius:7, pointBackgroundColor:(c)=>c.dataIndex===4?AKS2:AKS, borderWidth:3},
+    {label:"It's Collagen", data:[205042,436392,726604,920979,1159898], borderColor:ITS, backgroundColor:ITS_BG, fill:true, tension:.4, pointRadius:7, pointBackgroundColor:(c)=>c.dataIndex===4?ITS2:ITS, borderWidth:3},
+    {label:'Binn Pets', data:[276101,318363,267043,323992,321807], borderColor:BINN, backgroundColor:BINN_BG, fill:true, tension:.4, pointRadius:7, pointBackgroundColor:(c)=>c.dataIndex===4?BINN2:BINN, borderWidth:3}
+  ]},
+  options: baseOpts(fR)
+});
+
+new Chart('mayRoasTrend',{
+  type:'line', plugins:MP,
+  data:{labels:M5, datasets:[
+    {label:'Aksolagen', data:[2.91,3.15,3.12,4.43,4.36], borderColor:AKS, fill:false, tension:.4, pointRadius:7, borderWidth:3},
+    {label:"It's Collagen", data:[6.09,2.70,3.18,3.29,3.88], borderColor:ITS, fill:false, tension:.4, pointRadius:7, borderWidth:3},
+    {label:'Binn Pets (с ассоц.)', data:[2.21,2.81,3.01,3.47,2.82], borderColor:BINN, fill:false, tension:.4, pointRadius:7, borderWidth:3},
+    {label:'Target 3x', data:[3,3,3,3,3], borderColor:'#9ca3af', borderDash:[6,4], borderWidth:1.5, pointRadius:0, fill:false}
+  ]},
+  options:{...baseOpts(fX), scales:{...baseOpts(fX).scales, y:{...baseOpts(fX).scales.y, min:0}}}
+});
+
+new Chart('mayKorzin',{
+  type:'bar', plugins:MP,
+  data:{labels:M5, datasets:[
+    {label:'Aksolagen', data:[4041,4039,4713,8927,6590], backgroundColor:AKS, borderRadius:5, barPercentage:.6},
+    {label:"It's Collagen", data:[875,2518,3320,6364,8109], backgroundColor:ITS, borderRadius:5, barPercentage:.6},
+    {label:'Binn Pets', data:[780,836,401,388,618], backgroundColor:BINN, borderRadius:5, barPercentage:.6}
+  ]},
+  options: baseOpts(fN)
+});
+
+// DRR weekly chart
+const drrWeeks = ['27.04–03.05','04.05–10.05','11.05–17.05','18.05–24.05','25.05–31.05'];
+new Chart('mayDrrChart',{
+  type:'line',
+  data:{labels:drrWeeks, datasets:[
+    {label:"It's Collagen ДРР", data:[10.1,30.5,24.4,26.7,20.6], borderColor:ITS, backgroundColor:ITS_BG, fill:false, tension:.4, pointRadius:6, borderWidth:3},
+    {label:'Aksolagen ДРР', data:[31.9,27.0,34.4,55.0,48.7], borderColor:AKS, backgroundColor:AKS_BG, fill:false, tension:.4, pointRadius:6, borderWidth:3},
+    {label:'Целевой ДРР 25%', data:[25,25,25,25,25], borderColor:'#10b981', borderDash:[6,4], borderWidth:1.5, pointRadius:0, fill:false}
+  ]},
+  options: baseOpts(fP)
+});
+
+// ───────── GLOBAL TAB ─────────
+new Chart('globRev',{
+  type:'line', plugins:MP,
+  data:{labels:M5, datasets:[
+    {label:'Aksolagen', data:[621944,768114,939414,2100404,1650702], borderColor:AKS, backgroundColor:AKS_BG, fill:true, tension:.4, pointRadius:6, borderWidth:3},
+    {label:"It's Collagen", data:[205042,436392,726604,920979,1159898], borderColor:ITS, backgroundColor:ITS_BG, fill:true, tension:.4, pointRadius:6, borderWidth:3},
+    {label:'Binn Pets', data:[276101,318363,267043,323992,321807], borderColor:BINN, backgroundColor:BINN_BG, fill:true, tension:.4, pointRadius:6, borderWidth:3}
+  ]},
+  options: baseOpts(fR)
+});
+
+new Chart('globRoas',{
+  type:'line', plugins:MP,
+  data:{labels:M5, datasets:[
+    {label:'Aksolagen', data:[2.91,3.15,3.12,4.43,4.36], borderColor:AKS, fill:false, tension:.4, pointRadius:6, borderWidth:3},
+    {label:"It's Collagen", data:[6.09,2.70,3.18,3.29,3.88], borderColor:ITS, fill:false, tension:.4, pointRadius:6, borderWidth:3},
+    {label:'Binn Pets', data:[2.21,2.81,3.01,3.47,2.82], borderColor:BINN, fill:false, tension:.4, pointRadius:6, borderWidth:3},
+    {label:'Target 3x', data:[3,3,3,3,3], borderColor:'#9ca3af', borderDash:[6,4], borderWidth:1.5, pointRadius:0, fill:false}
+  ]},
+  options:{...baseOpts(fX), scales:{...baseOpts(fX).scales, y:{...baseOpts(fX).scales.y, min:0}}}
+});
+
+new Chart('globKorzin',{
+  type:'bar', plugins:MP,
+  data:{labels:M5, datasets:[
+    {label:'Aksolagen', data:[4041,4039,4713,8927,6590], backgroundColor:AKS, borderRadius:5, barPercentage:.6},
+    {label:"It's Collagen", data:[875,2518,3320,6364,8109], backgroundColor:ITS, borderRadius:5, barPercentage:.6},
+    {label:'Binn Pets', data:[780,836,401,388,618], backgroundColor:BINN, borderRadius:5, barPercentage:.6}
+  ]},
+  options: baseOpts(fN)
+});
+
+new Chart('globOrders',{
+  type:'bar', plugins:MP,
+  data:{labels:M5, datasets:[
+    {label:'Aksolagen', data:[266,281,391,1041,729], backgroundColor:AKS, borderRadius:5, barPercentage:.6},
+    {label:"It's Collagen", data:[140,261,428,527,629], backgroundColor:ITS, borderRadius:5, barPercentage:.6},
+    {label:'Binn Pets', data:[152,165,91,54,187], backgroundColor:BINN, borderRadius:5, barPercentage:.6}
+  ]},
+  options: baseOpts(fN)
+});
+
+// ───────── AKS TAB ─────────
+new Chart('aksRev',{type:'line', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Выручка', data:[621944,768114,939414,2100404,1650702], borderColor:AKS, backgroundColor:AKS_BG, fill:true, tension:.4, pointRadius:7, borderWidth:3}
+]}, options:baseOpts(fR)});
+new Chart('aksOrd',{type:'bar', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Заказы', data:[266,281,391,1041,729], backgroundColor:AKS, borderRadius:6}
+]}, options:baseOpts(fN)});
+new Chart('aksRoas',{type:'line', plugins:MP, data:{labels:M5, datasets:[
+  {label:'ROAS', data:[2.91,3.15,3.12,4.43,4.36], borderColor:AKS, backgroundColor:AKS_BG, fill:true, tension:.4, pointRadius:7, borderWidth:3},
+  {label:'Target 3x', data:[3,3,3,3,3], borderColor:'#9ca3af', borderDash:[6,4], borderWidth:1.5, pointRadius:0, fill:false}
+]}, options:{...baseOpts(fX), scales:{...baseOpts(fX).scales, y:{...baseOpts(fX).scales.y, min:0}}}});
+new Chart('aksInteg',{type:'bar', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Интеграций', data:[8,10,10,16,14], backgroundColor:AKS, borderRadius:6}
+]}, options:baseOpts(v=>v)});
+new Chart('aksRevBar',{type:'bar', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Выручка', data:[621944,768114,939414,2100404,1650702], backgroundColor:AKS, borderRadius:6}
+]}, options:baseOpts(fR)});
+
+// ───────── ITS TAB ─────────
+new Chart('itsRev',{type:'line', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Выручка', data:[205042,436392,726604,920979,1159898], borderColor:ITS, backgroundColor:ITS_BG, fill:true, tension:.4, pointRadius:7, borderWidth:3}
+]}, options:baseOpts(fR)});
+new Chart('itsOrd',{type:'bar', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Заказы', data:[140,261,428,527,629], backgroundColor:ITS, borderRadius:6}
+]}, options:baseOpts(fN)});
+new Chart('itsRoas',{type:'line', plugins:MP, data:{labels:M5, datasets:[
+  {label:'ROAS', data:[6.09,2.70,3.18,3.29,3.88], borderColor:ITS, backgroundColor:ITS_BG, fill:true, tension:.4, pointRadius:7, borderWidth:3},
+  {label:'Target 3x', data:[3,3,3,3,3], borderColor:'#9ca3af', borderDash:[6,4], borderWidth:1.5, pointRadius:0, fill:false}
+]}, options:{...baseOpts(fX), scales:{...baseOpts(fX).scales, y:{...baseOpts(fX).scales.y, min:0}}}});
+new Chart('itsInteg',{type:'bar', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Интеграций', data:[3,9,11,13,16], backgroundColor:ITS, borderRadius:6}
+]}, options:baseOpts(v=>v)});
+new Chart('itsRevBar',{type:'bar', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Выручка', data:[205042,436392,726604,920979,1159898], backgroundColor:ITS, borderRadius:6}
+]}, options:baseOpts(fR)});
+
+// ───────── BINN TAB ─────────
+new Chart('binnRoas',{type:'line', plugins:MP, data:{labels:M5, datasets:[
+  {label:'ROAS по UTM', data:[1.68,1.86,1.47,1.60,0.94], borderColor:WARN, backgroundColor:'rgba(245,158,11,.1)', fill:true, tension:.4, pointRadius:7, borderWidth:3},
+  {label:'ROAS с ассоц. продажами', data:[2.21,2.81,3.01,3.47,2.82], borderColor:BINN, backgroundColor:BINN_BG, fill:true, tension:.4, pointRadius:7, borderWidth:3},
+  {label:'Target 3x', data:[3,3,3,3,3], borderColor:'#9ca3af', borderDash:[6,4], borderWidth:1.5, pointRadius:0, fill:false}
+]}, options:{...baseOpts(fX), scales:{...baseOpts(fX).scales, y:{...baseOpts(fX).scales.y, min:0}}}});
+
+new Chart('binnRevStack',{type:'bar', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Выручка UTM, ₽', data:[209726,211081,130530,149533,107218], backgroundColor:BINN2, stack:'rev'},
+  {label:'Ассоц. продажи, ₽', data:[66375,107282,136513,174459,214589], backgroundColor:'rgba(16,185,129,.4)', borderRadius:6, stack:'rev'}
+]}, options:{...baseOpts(fR), scales:{x:{stacked:true, grid:{display:false}}, y:{stacked:true, grid:{color:'#f0f2f7'}, ticks:{callback:fR}}}}});
+
+new Chart('binnFunnel',{type:'line', plugins:MP, data:{labels:M5, datasets:[
+  {label:'Переходы', data:[5402,4724,2802,2777,5385], borderColor:BINN, fill:false, tension:.4, pointRadius:6, borderWidth:3},
+  {label:'Корзины', data:[780,836,401,388,618], borderColor:WARN, fill:false, tension:.4, pointRadius:6, borderWidth:2.5},
+  {label:'Заказы UTM', data:[152,165,91,54,37], borderColor:'#ef4444', fill:false, tension:.4, pointRadius:6, borderWidth:2}
+]}, options:baseOpts(fN)});
+
+// ───────── CTX TAB ─────────
+const itsYdWeeks = ['05.01','30.03','06.04','13.04','20.04','27.04','04.05','11.05','18.05','25.05'];
+new Chart('itsYdChart',{type:'line', data:{labels:itsYdWeeks, datasets:[
+  {label:'Выручка, ₽', data:[79251,132995,155538,357039,186726,391372,143224,160012,129500,163549], borderColor:ITS, backgroundColor:ITS_BG, fill:true, tension:.4, pointRadius:6, borderWidth:3, yAxisID:'y'},
+  {label:'ДРР, %', data:[37.2,25.1,24.7,9.7,18.0,10.1,30.5,24.4,26.7,20.6], borderColor:WARN, fill:false, tension:.4, pointRadius:5, borderWidth:2, yAxisID:'y1', borderDash:[3,3]}
+]}, options:{
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{position:'top'}},
+  scales:{
+    x:{grid:{display:false}},
+    y:{position:'left', grid:{color:'#f0f2f7'}, ticks:{callback:fR}, title:{display:true, text:'Выручка'}},
+    y1:{position:'right', grid:{display:false}, ticks:{callback:v=>v+'%'}, title:{display:true, text:'ДРР'}}
+  }
+}});
+
+const aksYdWeeks = ['05.01','30.03','06.04','13.04','20.04','27.04','04.05','11.05','18.05','25.05'];
+new Chart('aksYdChart',{type:'line', data:{labels:aksYdWeeks, datasets:[
+  {label:'Выручка, ₽', data:[4322,6834,11108,35188,27547,55364,73000,56485,35686,47638], borderColor:AKS, backgroundColor:AKS_BG, fill:true, tension:.4, pointRadius:6, borderWidth:3, yAxisID:'y'},
+  {label:'ДРР, %', data:[308.6,148.6,161.9,42.7,43.6,31.9,27.0,34.4,55.0,48.7], borderColor:WARN, fill:false, tension:.4, pointRadius:5, borderWidth:2, yAxisID:'y1', borderDash:[3,3]}
+]}, options:{
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{position:'top'}},
+  scales:{
+    x:{grid:{display:false}},
+    y:{position:'left', grid:{color:'#f0f2f7'}, ticks:{callback:fR}, title:{display:true, text:'Выручка'}},
+    y1:{position:'right', grid:{display:false}, ticks:{callback:v=>v+'%'}, title:{display:true, text:'ДРР'}, suggestedMax:100}
+  }
+}});
+</script>
+</body>
+</html>
